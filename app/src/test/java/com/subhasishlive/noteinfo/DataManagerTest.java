@@ -23,8 +23,10 @@ public class DataManagerTest {
 
         NoteInfo compareNote = dm.getNotes().get(noteIndex);
         // We can access the Methods just like statements...
-        assertSame(newNote,compareNote);
-
+//        assertSame(newNote,compareNote);
+            assertEquals(compareNote.getCourse(),course);
+            assertEquals(compareNote.getTitle(),noteTitle);
+            assertEquals(compareNote.getText(),noteText);
     }
 
 }
