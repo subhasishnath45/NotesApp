@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -14,6 +15,8 @@ import java.util.List;
 
 
 public class NoteActivity extends AppCompatActivity {
+    // the following constant is for TAG name
+    private final String TAG = getClass().getSimpleName();
     // The following constant is used as the key for putextra and getextra method of intents.
     public static final String NOTE_POSITION = "com.subhasishlive.noteinfo.NOTE_POSITION";
 
@@ -74,6 +77,7 @@ public class NoteActivity extends AppCompatActivity {
             // displayNote() is called only for existing notes...
             displayNote(mSpinnerCourses, mTextNoteTitle, mTextNoteText);
         }
+        Log.d(TAG, "onCreate");
 
     }
 
@@ -101,6 +105,8 @@ public class NoteActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         if(mIsCancelling){
+            // log a message when the user is cancelling.
+            Log.i(TAG,"Cancelling note at position: " + mNotePosition);
             if(mIsNewNote){
                 DataManager.getInstance().removeNote(mNotePosition);
             }
@@ -111,7 +117,7 @@ public class NoteActivity extends AppCompatActivity {
         }else{
             saveNote();
         }
-
+        Log.d(TAG, "onPause");
     }
 
     private void storePreviousNoteValues() {
@@ -154,13 +160,15 @@ public class NoteActivity extends AppCompatActivity {
     private void readDisplayStateValues() {
         Intent intent = getIntent();
         // getting the extra from the Parcelable...
-        int position = intent.getIntExtra(NOTE_POSITION, POSITION_NOT_SET);
-        mIsNewNote = position == POSITION_NOT_SET;
+        mNotePosition = intent.getIntExtra(NOTE_POSITION, POSITION_NOT_SET);
+        mIsNewNote = mNotePosition == POSITION_NOT_SET;
         if(mIsNewNote){
             createNewNote();
-        }else{
-            mNote = DataManager.getInstance().getNotes().get(position);
         }
+//        else{
+            Log.i(TAG,"mNotePosition" + mNotePosition);
+            mNote = DataManager.getInstance().getNotes().get(mNotePosition);
+//        }
     }
 
     private void createNewNote() {
@@ -170,7 +178,7 @@ public class NoteActivity extends AppCompatActivity {
         // and returning the position of newly created note...
         mNotePosition = dm.createNewNote();
         // getting that particular note of that position...
-        mNote = dm.getNotes().get(mNotePosition);
+//        mNote = dm.getNotes().get(mNotePosition);
     }
 
     @Override
